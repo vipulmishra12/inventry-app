@@ -25,8 +25,8 @@ const Profile = () => {
         console.log("User data retrieved:", data);
 
         setProfile(data);
-        await dispatch(SET_USER(data));
-        await dispatch(SET_NAME(data.name));
+        dispatch(SET_USER(data));
+        dispatch(SET_NAME(data.name));
       } catch (error) {
         console.error("Error fetching user data:", error);
         setProfile(null);
@@ -86,7 +86,6 @@ const Profile = () => {
 
   // State to handle hover effect on the button
   const [isHovering, setIsHovering] = useState(false);
-
   const handleMouseEnter = () => setIsHovering(true);
   const handleMouseLeave = () => setIsHovering(false);
 

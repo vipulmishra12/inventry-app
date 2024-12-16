@@ -1,7 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Product = require("../models/productModel")
 const { fileSizeFormatter } = require("../utils/fileUpload")
-// const multer = require('multer');
 const cloudinary = require("cloudinary").v2
 
 const createProduct = asyncHandler(async (req, res) => {
@@ -112,10 +111,11 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
     const { name, sku, category, quantity, price, description } = req.body
+    const { id } = req.params;
 
+    const product = await Product.findById(id);
 
-
-    const product = await Product.findById(req.params.id)
+    // const product = await Product.findById(req.params.id)
 
     // Check if product exists
 

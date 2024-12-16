@@ -10,7 +10,7 @@ const initialState = {
   isLoading: false,
   message: "",
   totalStoreValue: 0,
-  outOfStock: 5,
+  outOfStock: 0,
   category: [],
 };
 
@@ -102,7 +102,7 @@ export const updateProduct = createAsyncThunk(
           error.response.data.message) ||
         error.message ||
         error.toString();
-      console.error(message); // Use console.error for errors
+      console.log(message);
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -152,12 +152,6 @@ const productSlice = createSlice({
       const uniqueCategory = [...new Set(array)];
       state.category = uniqueCategory;
     },
-    resetState: (state) => {
-      state.isLoading = false;
-      state.isSuccess = false;
-      state.isError = false;
-      state.message = "";
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -185,7 +179,6 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        console.log(action.payload);
         state.products = action.payload;
       })
       .addCase(getProducts.rejected, (state, action) => {
@@ -224,7 +217,6 @@ const productSlice = createSlice({
         state.message = action.payload;
         toast.error(action.payload);
       })
-
       .addCase(updateProduct.pending, (state) => {
         state.isLoading = true;
       })
@@ -232,20 +224,10 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        toast.success('Product updated successfully');
+        state.product = action.payload;
+        console.log(action.payload)
 
-        // Find and update the specific product in the products array
-        const index = state.products.findIndex(
-          (product) => product._id === action.payload._id
-        );
-        if (index !== -1) {
-          state.products[index] = action.payload;
-        }
-
-        // Also update the single product if it's the one being edited
-        if (state.product && state.product._id === action.payload._id) {
-          state.product = action.payload;
-        }
+        toast.success("Product updated successfully");
       })
       .addCase(updateProduct.rejected, (state, action) => {
         state.isLoading = false;
@@ -253,27 +235,10 @@ const productSlice = createSlice({
         state.message = action.payload;
         toast.error(action.payload);
       });
-
-      
-      // .addCase(updateProduct.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(updateProduct.fulfilled, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isSuccess = true;
-      //   state.isError = false;
-      //   toast.success("Product updated successfully");
-      // })
-      // .addCase(updateProduct.rejected, (state, action) => {
-      //   state.isLoading = false;
-      //   state.isError = true;
-      //   state.message = action.payload;
-      //   toast.error(action.payload);
-      // });
   },
 });
 
-export const { CALC_STORE_VALUE, CALC_OUTOFSTOCK, CALC_CATEGORY,resetState } =
+export const { CALC_STORE_VALUE, CALC_OUTOFSTOCK, CALC_CATEGORY } =
   productSlice.actions;
 
 export const selectIsLoading = (state) => state.product.isLoading;

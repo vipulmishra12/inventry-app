@@ -5,7 +5,6 @@ import Loader from "../../components/loader/Loader";
 import ProductForm from "../../components/product/productForm/ProductForm";
 import {
   getProduct,
-  // getProducts,
   selectIsLoading,
   selectProduct,
   updateProduct,
@@ -20,10 +19,10 @@ const EditProduct = () => {
   const productEdit = useSelector(selectProduct);
 
   const [product, setProduct] = useState({
-    name: '',
-    category: '',
-    quantity: '',
-    price: '',
+    name: "",
+    category: "",
+    quantity: "",
+    price: "",
   });
   const [productImage, setProductImage] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
@@ -34,24 +33,21 @@ const EditProduct = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
+    if (productEdit) {
+      setProduct({
+        name: productEdit.name || "",
+        category: productEdit.category || "",
+        quantity: productEdit.quantity || "",
+        price: productEdit.price || "",
+      });
 
-    setProduct({
-      name: productEdit.name || '',
-      category: productEdit.category || '',
-      quantity: productEdit.quantity || '',
-      price: productEdit.price || '',
-    });
+      setImagePreview(
+        productEdit.image ? `${productEdit.image.filePath}` : null
+      );
 
-    setImagePreview(
-      productEdit && productEdit.image ? `${productEdit.image.filePath}` : null
-    );
-
-    setDescription(
-      productEdit && productEdit.description ? productEdit.description : ""
-    );
+      setDescription(productEdit.description || "");
+    }
   }, [productEdit]);
-
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -65,10 +61,9 @@ const EditProduct = () => {
 
   const saveProduct = async (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
     formData.append("name", product?.name);
-
     formData.append("category", product?.category);
     formData.append("quantity", product?.quantity);
     formData.append("price", product?.price);
@@ -77,12 +72,11 @@ const EditProduct = () => {
       formData.append("image", productImage);
     }
 
-    console.log(...formData);
-
     await dispatch(updateProduct({ id, formData }));
-    // await dispatch(getProducts());
     navigate("/dashboard");
+    console.log(formData)
   };
+
 
   return (
     <div>
